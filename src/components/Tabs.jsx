@@ -15,8 +15,7 @@ export default function Tabs({ repoUrl, onBack }) {
 
   return (
     <div className="min-h-screen bg-paper text-ink px-6 py-8">
-      <div className="max-w-5xl mx-auto">
-        {/* Top bar */}
+      <div className="max-w-5xl mx-auto brutal-enter">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="text-3xl md:text-4xl font-black">Repo2Demo</div>
@@ -34,7 +33,6 @@ export default function Tabs({ repoUrl, onBack }) {
           </button>
         </div>
 
-        {/* Tabs */}
         <div className="mt-6 border-4 border-ink bg-slab shadow-brutal">
           <div className="flex flex-col md:flex-row border-b-4 border-ink">
             {tabs.map((t) => {
@@ -60,59 +58,35 @@ export default function Tabs({ repoUrl, onBack }) {
 
           <div className="p-6 md:p-8">
             {active === "map" && (
-              <Panel
-                title="Repository Structure"
-                subtitle="Placeholder tree + entry points. No backend yet."
-              >
+              <Panel title="Repository Structure">
                 <SkeletonBlocks variant="tree" />
               </Panel>
             )}
-
             {active === "arch" && (
-              <Panel
-                title="Architecture Snapshot"
-                subtitle="Placeholder components + stack boxes. No backend yet."
-              >
+              <Panel title="Architecture Snapshot">
                 <SkeletonBlocks variant="arch" />
               </Panel>
             )}
-
             {active === "demo" && (
-              <Panel
-                title="Demo Script"
-                subtitle="Placeholder script + shot list. No backend yet."
-              >
+              <Panel title="Demo Script">
                 <SkeletonBlocks variant="demo" />
               </Panel>
             )}
           </div>
-        </div>
-
-        <div className="mt-6 font-mono text-xs text-ash">
-          Step 1 complete: landing → loading → 3 tabs. Next step: wire backend responses.
         </div>
       </div>
     </div>
   );
 }
 
-function Panel({ title, subtitle, children }) {
+function Panel({ title, children }) {
   return (
-    <div>
-      <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-3">
-        <div>
-          <div className="text-2xl md:text-3xl font-black">{title}</div>
-          <div className="mt-1 font-mono text-xs text-ash">{subtitle}</div>
-        </div>
-
-        <div className="border-2 border-ink bg-paper px-3 py-2 font-mono text-xs">
-          PLACEHOLDER
-        </div>
-      </div>
-
+    <div className="brutal-enter">
+      <div className="text-2xl md:text-3xl font-black">{title}</div>
       <div className="mt-6 border-4 border-ink bg-paper p-5">
         {children}
       </div>
     </div>
   );
 }
+
