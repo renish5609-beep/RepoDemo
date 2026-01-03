@@ -24,9 +24,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
   const [tick, setTick] = useState(0);
   const [noise, setNoise] = useState(Math.random().toFixed(5));
 
-  /* ======================================================
-     PROGRESS SIMULATION
-     ====================================================== */
+
 
   useEffect(() => {
     const t1 = setInterval(() => {
