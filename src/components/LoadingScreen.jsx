@@ -39,7 +39,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
 
   return (
     <div className="min-h-screen bg-ink text-paper flex items-center justify-center px-6">
-      <div className="w-full max-w-3xl border-4 border-paper p-8 md:p-10">
+      <div className="w-full max-w-3xl border-4 border-paper p-8 md:p-10 brutal-enter">
         <div className="flex items-start justify-between gap-6">
           <div>
             <div className="text-4xl md:text-5xl font-black tracking-tight flicker">
@@ -56,7 +56,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
 
         <div className="mt-8 border-2 border-paper">
           <div
-            className="h-4 bg-accent brutal-hover"
+            className="h-4 bg-accent brutal-hover brutal-scan"
             style={{ width: `${pct}%` }}
           />
         </div>
@@ -81,3 +81,4 @@ export default function LoadingScreen({ repoUrl, onDone }) {
     </div>
   );
 }
+
