@@ -1,10 +1,12 @@
 @import "tailwindcss";
 
-/* Neo-brutalist defaults */
+
+
 :root {
   color-scheme: light;
 }
 
+/* Global reset-ish */
 html, body {
   height: 100%;
 }
@@ -21,12 +23,13 @@ body {
   color: #ffffff;
 }
 
-/* Slight “broken” scanline texture (subtle) */
+
+
 .scanlines {
   position: relative;
 }
 
-.scanlines:before {
+.scanlines::before {
   content: "";
   pointer-events: none;
   position: absolute;
@@ -41,17 +44,50 @@ body {
   );
 }
 
-/* Flicker (tiny + rare) */
+/* ===============================
+   ANIMATION PHILOSOPHY
+   visible • intentional • expressive
+   =============================== */
+
+/* Entrance: smooth but noticeable */
+@keyframes slamUp {
+  0% {
+    transform: translateY(18px) scale(0.98);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-slam {
+  animation: slamUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Float = personality */
+@keyframes floatSlow {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+/* Flicker: rare, unsettling */
 @keyframes microFlicker {
   0%, 97%, 100% { opacity: 1; }
   98% { opacity: 0.55; }
   99% { opacity: 0.9; }
 }
+
 .flicker {
   animation: microFlicker 3.5s infinite;
 }
 
-/* Glitch jitter */
+/* Glitch jitter (violent, short) */
 @keyframes jitter {
   0% { transform: translate(0,0); }
   20% { transform: translate(-1px,0); }
@@ -60,11 +96,13 @@ body {
   80% { transform: translate(0,-1px); }
   100% { transform: translate(0,0); }
 }
+
 .jitter:hover {
   animation: jitter 0.15s steps(2, end) infinite;
 }
 
-/* Instant brutal hover invert (no easing) */
+/* Brutalist hover = instant */
 .brutal-hover {
   transition: none !important;
 }
+
