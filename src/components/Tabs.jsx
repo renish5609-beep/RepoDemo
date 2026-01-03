@@ -34,7 +34,7 @@ export default function Tabs({ repoUrl, onBack }) {
       <div className="max-w-7xl mx-auto border-4 border-ink bg-slab shadow-brutal p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           <div>
-            <GlitchText text="Repo2Demo" level="light" unstable />
+            <GlitchText text="RepoDemo" level="light" unstable />
             <div className="mt-2 font-mono text-xs text-ash break-all">
               {repoUrl}
             </div>
