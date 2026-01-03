@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import GlitchText from "./GlitchText.jsx";
 
-
-
 export default function Landing({ tagline, onGenerate }) {
   const [url, setUrl] = useState("");
 
@@ -13,13 +11,9 @@ export default function Landing({ tagline, onGenerate }) {
 
   return (
     <div className="scanlines min-h-screen px-6 py-10">
-
-     
       <section className="flex items-center justify-center">
         <div className="w-full max-w-3xl brutal-enter">
           <div className="border-4 border-ink bg-slab shadow-brutal p-8 md:p-10">
-
-            {/* HEADER */}
             <div className="flex items-start justify-between gap-6">
               <div>
                 <GlitchText text="Repo2Demo" />
@@ -38,9 +32,11 @@ export default function Landing({ tagline, onGenerate }) {
               </div>
             </div>
 
-            {/* INPUT + ACTION */}
-            <div className="mt-8 grid md:grid-cols-12 gap-5">
-              <div className="md:col-span-8">
+            <form
+              onSubmit={submit}
+              className="mt-8 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end"
+            >
+              <div>
                 <label className="block font-bold text-lg mb-2">
                   GitHub Repo URL
                 </label>
@@ -49,7 +45,7 @@ export default function Landing({ tagline, onGenerate }) {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://github.com/owner/repo"
-                  className="w-full border-4 border-ink bg-paper px-4 py-4 text-base md:text-lg font-mono outline-none focus:ring-0"
+                  className="w-full h-[64px] border-4 border-ink bg-paper px-4 text-base md:text-lg font-mono outline-none focus:ring-0"
                 />
 
                 <p className="mt-2 text-xs font-mono text-ash">
@@ -57,18 +53,14 @@ export default function Landing({ tagline, onGenerate }) {
                 </p>
               </div>
 
-              <div className="md:col-span-4 flex items-end">
-                <button
-                  onClick={submit}
-                  className="w-full border-4 border-ink bg-accent text-white font-black text-lg px-5 py-4 brutal-hover jitter hover:bg-ink hover:text-paper"
-                  type="button"
-                >
-                  GENERATE DEMO
-                </button>
-              </div>
-            </div>
+              <button
+                type="submit"
+                className="h-[64px] border-4 border-ink bg-accent text-white font-black text-lg px-6 brutal-hover jitter hover:bg-ink hover:text-paper"
+              >
+                GENERATE DEMO
+              </button>
+            </form>
 
-            {/* BADGES */}
             <div className="mt-8 flex flex-wrap gap-2">
               <Badge>THICK BORDERS</Badge>
               <Badge>NO GRADIENTS</Badge>
@@ -81,7 +73,6 @@ export default function Landing({ tagline, onGenerate }) {
         </div>
       </section>
 
-     
       <section className="mt-16 max-w-4xl mx-auto brutal-enter">
         <div className="border-4 border-ink bg-paper p-8 md:p-10">
           <h2 className="text-2xl md:text-3xl font-black">
@@ -103,7 +94,6 @@ export default function Landing({ tagline, onGenerate }) {
         </div>
       </section>
 
-    
       <section className="mt-16 max-w-5xl mx-auto brutal-enter">
         <div className="border-4 border-ink bg-slab p-8 md:p-10">
           <h2 className="text-2xl md:text-3xl font-black mb-6">
@@ -134,7 +124,6 @@ export default function Landing({ tagline, onGenerate }) {
         </div>
       </section>
 
-      
       <section className="mt-16 max-w-4xl mx-auto brutal-enter">
         <div className="border-4 border-ink bg-paper p-8 md:p-10">
           <h2 className="text-xl md:text-2xl font-black">
@@ -154,15 +143,12 @@ export default function Landing({ tagline, onGenerate }) {
         </div>
       </section>
 
-   
       <footer className="mt-16 text-center font-mono text-xs text-ash">
         Repo2Demo • UI Prototype • Built loud on purpose
       </footer>
     </div>
   );
 }
-
-
 
 function Badge({ children }) {
   return (
