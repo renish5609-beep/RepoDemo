@@ -19,7 +19,6 @@ export default function LoadingScreen({ repoUrl, onDone }) {
   const [tick, setTick] = useState(0);
   const [noise, setNoise] = useState(Math.random().toFixed(5));
 
- 
   useEffect(() => {
     const t1 = setInterval(() => {
       setPct((p) =>
@@ -39,7 +38,6 @@ export default function LoadingScreen({ repoUrl, onDone }) {
     };
   }, [steps.length]);
 
-  
   useEffect(() => {
     if (displayPct >= pct) return;
 
@@ -52,7 +50,6 @@ export default function LoadingScreen({ repoUrl, onDone }) {
 
     return () => clearInterval(smooth);
   }, [pct, displayPct]);
-
 
   useEffect(() => {
     if (pct >= 100 && displayPct >= 100) {
@@ -80,12 +77,13 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
-        {/* PROGRESS BAR */}
-        <div className="mt-8 border-2 border-paper h-5">
+        {/* PROGRESS BAR — FIXED */}
+        <div className="mt-8 border-2 border-paper h-6 bg-paper">
           <div
             className="h-full bg-accent brutal-hover brutal-scan"
             style={{
-              width: `${displayPct}%`
+              width: `${displayPct}%`,
+              transition: "width 120ms linear"
             }}
           />
         </div>
