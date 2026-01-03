@@ -1,10 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 
-
-
 export default function LoadingScreen({ repoUrl, onDone }) {
-
-
   const steps = useMemo(
     () => [
       "Fetching repository metadata",
@@ -16,19 +12,19 @@ export default function LoadingScreen({ repoUrl, onDone }) {
     []
   );
 
-
-
   const [pct, setPct] = useState(2);
+  const [displayPct, setDisplayPct] = useState(0);
   const [lineCount, setLineCount] = useState(1);
 
   const [tick, setTick] = useState(0);
   const [noise, setNoise] = useState(Math.random().toFixed(5));
 
-
-
+ 
   useEffect(() => {
     const t1 = setInterval(() => {
-      setPct((p) => Math.min(100, p + Math.floor(Math.random() * 8) + 1));
+      setPct((p) =>
+        Math.min(100, p + Math.floor(Math.random() * 8) + 1)
+      );
       setTick((t) => t + 1);
       setNoise(Math.random().toFixed(5));
     }, 240);
@@ -43,22 +39,32 @@ export default function LoadingScreen({ repoUrl, onDone }) {
     };
   }, [steps.length]);
 
+  
+  useEffect(() => {
+    if (displayPct >= pct) return;
+
+    const smooth = setInterval(() => {
+      setDisplayPct((d) => {
+        if (d >= pct) return d;
+        return Math.min(pct, d + 1);
+      });
+    }, 18);
+
+    return () => clearInterval(smooth);
+  }, [pct, displayPct]);
 
 
   useEffect(() => {
-    if (pct >= 100) {
+    if (pct >= 100 && displayPct >= 100) {
       const doneTimer = setTimeout(() => onDone(), 450);
       return () => clearTimeout(doneTimer);
     }
-  }, [pct, onDone]);
-
-
+  }, [pct, displayPct, onDone]);
 
   return (
     <div className="min-h-screen bg-ink text-paper flex items-center justify-center px-6">
       <div className="w-full max-w-4xl border-4 border-paper p-8 md:p-10 brutal-enter">
 
-      
         <div className="flex items-start justify-between gap-6">
           <div>
             <div className="text-4xl md:text-5xl font-black tracking-tight flicker">
@@ -74,15 +80,17 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
- 
-        <div className="mt-8 border-2 border-paper">
+        {/* PROGRESS BAR */}
+        <div className="mt-8 border-2 border-paper h-5">
           <div
-            className="h-4 bg-accent brutal-hover brutal-scan"
-            style={{ width: `${pct}%` }}
+            className="h-full bg-accent brutal-hover brutal-scan"
+            style={{
+              width: `${displayPct}%`
+            }}
           />
         </div>
 
-     
+        {/* LOG */}
         <div className="mt-8 font-mono text-xs md:text-sm border-2 border-paper p-4">
           <div className="text-paper/70 mb-2">LOG</div>
 
@@ -103,10 +111,8 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
-       
+        {/* METRICS */}
         <div className="mt-8 grid md:grid-cols-2 gap-6">
-
-          {/* LEFT: SYSTEM METRICS */}
           <div className="border-2 border-paper p-4 font-mono text-xs">
             <div className="font-bold mb-2">SYSTEM METRICS</div>
             <Metric label="Tick Count" value={tick} />
@@ -116,7 +122,6 @@ export default function LoadingScreen({ repoUrl, onDone }) {
             <Metric label="Network" value="OFFLINE" />
           </div>
 
-          {/* RIGHT: DISCLAIMER */}
           <div className="border-2 border-paper p-4 font-mono text-xs">
             <div className="font-bold mb-2">STATUS NOTES</div>
             <p className="text-paper/70 leading-relaxed">
@@ -130,25 +135,23 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
-     
+        {/* DEBUG */}
         <div className="mt-8 border-2 border-paper p-4 font-mono text-[10px] leading-relaxed text-paper/70">
           <div className="font-bold mb-2">DEBUG TRACE (NON-FUNCTIONAL)</div>
           <pre>
 {`{
   "repoUrl": "${repoUrl || "https://github.com/owner/repo"}",
   "progress": ${pct},
+  "displayProgress": ${displayPct},
   "stepIndex": ${lineCount},
   "tick": ${tick},
   "entropy": ${noise},
   "mode": "ui-only",
-  "analysis": false,
-  "backend": null,
-  "notes": "this output is intentionally verbose"
+  "analysis": false
 }`}
           </pre>
         </div>
 
-      
         <div className="mt-8 text-center font-mono text-xs text-paper/50">
           UI PROTOTYPE • LOADING AS PERFORMANCE • BUILT LOUD ON PURPOSE
         </div>
@@ -156,8 +159,6 @@ export default function LoadingScreen({ repoUrl, onDone }) {
     </div>
   );
 }
-
-
 
 function Metric({ label, value }) {
   return (
@@ -167,6 +168,5 @@ function Metric({ label, value }) {
     </div>
   );
 }
-
 
 
