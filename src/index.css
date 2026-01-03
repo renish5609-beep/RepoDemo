@@ -1,12 +1,10 @@
 @import "tailwindcss";
 
-
-
+/* Neo-brutalist defaults */
 :root {
   color-scheme: light;
 }
 
-/* Global reset-ish */
 html, body {
   height: 100%;
 }
@@ -23,13 +21,12 @@ body {
   color: #ffffff;
 }
 
-
-
+/* Slight “broken” scanline texture (subtle) */
 .scanlines {
   position: relative;
 }
 
-.scanlines::before {
+.scanlines:before {
   content: "";
   pointer-events: none;
   position: absolute;
@@ -44,50 +41,17 @@ body {
   );
 }
 
-/* ===============================
-   ANIMATION PHILOSOPHY
-   visible • intentional • expressive
-   =============================== */
-
-/* Entrance: smooth but noticeable */
-@keyframes slamUp {
-  0% {
-    transform: translateY(18px) scale(0.98);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-}
-
-.animate-slam {
-  animation: slamUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-
-/* Float = personality */
-@keyframes floatSlow {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0); }
-}
-
-.float {
-  animation: floatSlow 4s ease-in-out infinite;
-}
-
-/* Flicker: rare, unsettling */
+/* Flicker (tiny + rare) */
 @keyframes microFlicker {
   0%, 97%, 100% { opacity: 1; }
   98% { opacity: 0.55; }
   99% { opacity: 0.9; }
 }
-
 .flicker {
   animation: microFlicker 3.5s infinite;
 }
 
-/* Glitch jitter (violent, short) */
+/* Glitch jitter */
 @keyframes jitter {
   0% { transform: translate(0,0); }
   20% { transform: translate(-1px,0); }
@@ -96,13 +60,70 @@ body {
   80% { transform: translate(0,-1px); }
   100% { transform: translate(0,0); }
 }
-
 .jitter:hover {
   animation: jitter 0.15s steps(2, end) infinite;
 }
 
-/* Brutalist hover = instant */
+/* Instant brutal hover invert (no easing) */
 .brutal-hover {
   transition: none !important;
 }
+
+
+
+@keyframes brutalEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.brutal-enter {
+  animation: brutalEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes brutalFloat {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+.brutal-float {
+  animation: brutalFloat 4.5s ease-in-out infinite;
+}
+
+@keyframes brutalPulse {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.brutal-pulse {
+  animation: brutalPulse 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes brutalScan {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.brutal-scan {
+  background-size: 200% 100%;
+  animation: brutalScan 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brutal-enter,
+  .brutal-float,
+  .brutal-pulse,
+  .brutal-scan {
+    animation: none !important;
+  }
+}
+
+
 
