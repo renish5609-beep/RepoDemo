@@ -16,7 +16,7 @@ export default function Landing({ tagline, onGenerate }) {
           <div className="border-4 border-ink bg-slab shadow-brutal p-8 md:p-10">
             <div className="flex items-start justify-between gap-6">
               <div>
-                <GlitchText text="Repo2Demo" />
+                <GlitchText text="RepoDemo" />
                 <p className="mt-3 text-sm md:text-base font-mono text-ash">
                   {tagline}
                 </p>
