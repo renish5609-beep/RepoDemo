@@ -21,9 +21,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
 
   useEffect(() => {
     const t1 = setInterval(() => {
-      setPct((p) =>
-        Math.min(100, p + Math.floor(Math.random() * 8) + 1)
-      );
+      setPct((p) => Math.min(100, p + Math.floor(Math.random() * 8) + 1));
       setTick((t) => t + 1);
       setNoise(Math.random().toFixed(5));
     }, 240);
@@ -62,6 +60,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
     <div className="min-h-screen bg-ink text-paper flex items-center justify-center px-6">
       <div className="w-full max-w-4xl border-4 border-paper p-8 md:p-10 brutal-enter">
 
+        {/* HEADER */}
         <div className="flex items-start justify-between gap-6">
           <div>
             <div className="text-4xl md:text-5xl font-black tracking-tight flicker">
@@ -77,10 +76,15 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
-        {/* PROGRESS BAR — FIXED */}
-        <div className="mt-8 border-2 border-paper h-6 bg-paper">
+        {/* STATUS STRIP */}
+        <div className="mt-4 border-2 border-paper px-4 py-2 font-mono text-xs text-paper/70">
+          MODE: UI-ONLY • BACKEND: DISABLED • NETWORK: OFFLINE
+        </div>
+
+        {/* PROGRESS BAR (VISIBLE + FILLS) */}
+        <div className="mt-6 border-2 border-paper h-6 bg-paper">
           <div
-            className="h-full bg-accent brutal-hover brutal-scan"
+            className="h-full bg-ink"
             style={{
               width: `${displayPct}%`,
               transition: "width 120ms linear"
@@ -109,7 +113,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
-        {/* METRICS */}
+        {/* METRICS + NOTES */}
         <div className="mt-8 grid md:grid-cols-2 gap-6">
           <div className="border-2 border-paper p-4 font-mono text-xs">
             <div className="font-bold mb-2">SYSTEM METRICS</div>
@@ -133,7 +137,7 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </div>
         </div>
 
-        {/* DEBUG */}
+        {/* DEBUG TRACE */}
         <div className="mt-8 border-2 border-paper p-4 font-mono text-[10px] leading-relaxed text-paper/70">
           <div className="font-bold mb-2">DEBUG TRACE (NON-FUNCTIONAL)</div>
           <pre>
@@ -150,9 +154,11 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           </pre>
         </div>
 
+        {/* FOOTER */}
         <div className="mt-8 text-center font-mono text-xs text-paper/50">
           UI PROTOTYPE • LOADING AS PERFORMANCE • BUILT LOUD ON PURPOSE
         </div>
+
       </div>
     </div>
   );
