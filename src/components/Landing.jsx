@@ -34,7 +34,7 @@ export default function Landing({ tagline, onGenerate }) {
 
             <form
               onSubmit={submit}
-              className="mt-8 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-end"
+              className="mt-8 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-4 items-center"
             >
               <div>
                 <label className="block font-bold text-lg mb-2">
