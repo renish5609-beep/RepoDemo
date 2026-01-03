@@ -1,17 +1,11 @@
 import React, { useMemo } from "react";
 
-
-
 export default function GlitchText({
   text,
   level = "heavy",      // light | medium | heavy
   as: Tag = "h1",        // semantic flexibility
   unstable = false      // allow random offsets
 }) {
-  /**
-   * GLITCH INTENSITY PRESETS
-   * Explicit values > magic numbers
-   */
   const config = useMemo(() => {
     switch (level) {
       case "light":
@@ -36,10 +30,6 @@ export default function GlitchText({
     }
   }, [level]);
 
-  /**
-   * OPTIONAL CHAOS
-   * Only applied if explicitly enabled
-   */
   const chaos = unstable
     ? {
         transform: `translate(${Math.random() * 2 - 1}px, ${Math.random() * 2 - 1}px)`
@@ -48,17 +38,15 @@ export default function GlitchText({
 
   return (
     <div
-      className="relative inline-block brutal-float"
+      className="relative inline-block"
       aria-label={text}
     >
       <Tag className="text-5xl md:text-6xl font-black tracking-tight leading-none">
 
-      
         <span className="relative z-10">
           {text}
         </span>
 
-      
         <span
           aria-hidden="true"
           className="absolute left-0 top-0 text-5xl md:text-6xl font-black tracking-tight leading-none text-accent mix-blend-multiply brutal-hover"
@@ -71,7 +59,6 @@ export default function GlitchText({
           {text}
         </span>
 
-       
         <span
           aria-hidden="true"
           className="absolute left-0 top-0 text-5xl md:text-6xl font-black tracking-tight leading-none text-ink brutal-hover"
@@ -83,7 +70,6 @@ export default function GlitchText({
           {text}
         </span>
 
-      
         <span
           aria-hidden="true"
           className="absolute left-0 top-0 text-5xl md:text-6xl font-black tracking-tight leading-none text-ink opacity-10"
@@ -102,3 +88,4 @@ export default function GlitchText({
     </div>
   );
 }
+
