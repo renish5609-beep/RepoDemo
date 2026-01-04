@@ -1,20 +1,25 @@
-import fs from "fs";
+// File: /services/treeService.js
+import fs from "fs-extra";
 import path from "path";
 
-export function buildTree(root) {
+export async function buildTree(root) {
   let fileCount = 0;
+  // We need to store the relative root to hide the "temp/123456" path from the user
+  const rootDirName = path.basename(root);
 
-  function walk(dir) {
-    const entries = fs.readdirSync(dir, { withFileTypes: true });
-
-    return entries.map((e) => {
-      const full = path.join(dir, e.name);
+  async function walk(currentPath) {
+    const entries = await fs.readdir(currentPath, { withFileTypes: true });
+    
+    // Map entries to promises so we can scan in parallel
+    const childrenPromises = entries.map(async (e) => {
+      const fullPath = path.join(currentPath, e.name);
 
       if (e.isDirectory()) {
+        if (e.name === ".git") return null; // Ignore .git folder
         return {
           type: "dir",
           name: e.name,
-          children: walk(full)
+          children: await walk(fullPath)
         };
       }
 
@@ -25,11 +30,17 @@ export function buildTree(root) {
         ext: path.extname(e.name)
       };
     });
+
+    // Wait for all children to be processed, filter out nulls (.git)
+    const results = await Promise.all(childrenPromises);
+    return results.filter(Boolean);
   }
 
+  const treeData = await walk(root);
+
   return {
-    root: path.basename(root),
-    children: walk(root),
+    root: rootDirName,
+    children: treeData,
     fileCount
   };
 }
