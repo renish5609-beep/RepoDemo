@@ -1,61 +1,88 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 export default function LoadingScreen({ repoUrl, onDone }) {
+
   const steps = useMemo(
     () => [
-      "Fetching repository metadata",
-      "Reading file tree",
-      "Finding entry points",
-      "Mapping architecture surfaces",
-      "Drafting demo narrative"
+      "Validating repository URL",
+      "Cloning repository",
+      "Reading file system",
+      "Building directory tree",
+      "Detecting entry points",
+      "Inferring architecture",
+      "Finalizing analysis payload"
     ],
     []
   );
 
-  const [pct, setPct] = useState(2);
-  const [displayPct, setDisplayPct] = useState(0);
-  const [lineCount, setLineCount] = useState(1);
 
+  const [pct, setPct] = useState(0);
+  const [lineCount, setLineCount] = useState(1);
   const [tick, setTick] = useState(0);
-  const [noise, setNoise] = useState(Math.random().toFixed(5));
+  const [entropy, setEntropy] = useState(Math.random().toFixed(6));
+  const [error, setError] = useState(null);
+
 
   useEffect(() => {
-    const t1 = setInterval(() => {
-      setPct((p) => Math.min(100, p + Math.floor(Math.random() * 8) + 1));
-      setTick((t) => t + 1);
-      setNoise(Math.random().toFixed(5));
-    }, 240);
+    let alive = true;
 
-    const t2 = setInterval(() => {
-      setLineCount((c) => Math.min(steps.length, c + 1));
-    }, 420);
+    async function runAnalysis() {
+      try {
+        setPct(5);
+
+        const res = await fetch("http://localhost:3333/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ repoUrl })
+        });
+
+        if (!res.ok) {
+          throw new Error(`Backend responded ${res.status}`);
+        }
+
+        // artificial pacing so UI can breathe
+        for (let i = 1; i < steps.length; i++) {
+          await sleep(350);
+          if (!alive) return;
+          setLineCount(i + 1);
+          setPct(Math.min(90, i * 12));
+        }
+
+        const data = await res.json();
+
+        if (!alive) return;
+
+        // store globally for Tabs.jsx
+        window.__REPO_ANALYSIS__ = data;
+
+        setPct(100);
+
+        setTimeout(() => {
+          if (alive) onDone();
+        }, 500);
+      } catch (err) {
+        console.error(err);
+        setError("ANALYSIS FAILED");
+      }
+    }
+
+    runAnalysis();
 
     return () => {
-      clearInterval(t1);
-      clearInterval(t2);
+      alive = false;
     };
-  }, [steps.length]);
+  }, [repoUrl, onDone, steps.length]);
 
+ 
   useEffect(() => {
-    if (displayPct >= pct) return;
+    const t = setInterval(() => {
+      setTick((v) => v + 1);
+      setEntropy(Math.random().toFixed(6));
+    }, 700);
+    return () => clearInterval(t);
+  }, []);
 
-    const smooth = setInterval(() => {
-      setDisplayPct((d) => {
-        if (d >= pct) return d;
-        return Math.min(pct, d + 1);
-      });
-    }, 18);
-
-    return () => clearInterval(smooth);
-  }, [pct, displayPct]);
-
-  useEffect(() => {
-    if (pct >= 100 && displayPct >= 100) {
-      const doneTimer = setTimeout(() => onDone(), 450);
-      return () => clearTimeout(doneTimer);
-    }
-  }, [pct, displayPct, onDone]);
-
+  
   return (
     <div className="min-h-screen bg-ink text-paper flex items-center justify-center px-6">
       <div className="w-full max-w-4xl border-4 border-paper p-8 md:p-10 brutal-enter">
@@ -64,10 +91,10 @@ export default function LoadingScreen({ repoUrl, onDone }) {
         <div className="flex items-start justify-between gap-6">
           <div>
             <div className="text-4xl md:text-5xl font-black tracking-tight flicker">
-              ANALYZING…
+              ANALYZING
             </div>
-            <div className="mt-2 font-mono text-xs md:text-sm text-paper/80">
-              TARGET: {repoUrl || "https://github.com/owner/repo"}
+            <div className="mt-2 font-mono text-xs md:text-sm text-paper/80 break-all">
+              TARGET: {repoUrl}
             </div>
           </div>
 
@@ -78,16 +105,16 @@ export default function LoadingScreen({ repoUrl, onDone }) {
 
         {/* STATUS STRIP */}
         <div className="mt-4 border-2 border-paper px-4 py-2 font-mono text-xs text-paper/70">
-          MODE: UI-ONLY • BACKEND: DISABLED • NETWORK: OFFLINE
+          MODE: LIVE BACKEND • NETWORK: ACTIVE • CACHE: OFF
         </div>
 
-        {/* PROGRESS BAR (VISIBLE + FILLS) */}
+        {/* PROGRESS BAR */}
         <div className="mt-6 border-2 border-paper h-6 bg-paper">
           <div
             className="h-full bg-ink"
             style={{
-              width: `${displayPct}%`,
-              transition: "width 120ms linear"
+              width: `${pct}%`,
+              transition: "width 160ms linear"
             }}
           />
         </div>
@@ -109,68 +136,75 @@ export default function LoadingScreen({ repoUrl, onDone }) {
           ))}
 
           <div className="mt-3 text-paper/60">
-            {pct < 100 ? "DO NOT BLINK." : "DONE."}
+            {error ? error : pct < 100 ? "PROCESSING" : "COMPLETE"}
           </div>
         </div>
 
-        {/* METRICS + NOTES */}
+        {/* METRICS */}
         <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <div className="border-2 border-paper p-4 font-mono text-xs">
-            <div className="font-bold mb-2">SYSTEM METRICS</div>
-            <Metric label="Tick Count" value={tick} />
-            <Metric label="Entropy Seed" value={noise} />
-            <Metric label="Render Mode" value="SIMULATED" />
-            <Metric label="Parser" value="DISABLED" />
-            <Metric label="Network" value="OFFLINE" />
-          </div>
+          <Panel title="SYSTEM METRICS">
+            <Metric label="Tick" value={tick} />
+            <Metric label="Entropy" value={entropy} />
+            <Metric label="Parser" value="ACTIVE" />
+            <Metric label="Network" value="ONLINE" />
+          </Panel>
 
-          <div className="border-2 border-paper p-4 font-mono text-xs">
-            <div className="font-bold mb-2">STATUS NOTES</div>
-            <p className="text-paper/70 leading-relaxed">
-              This loading screen does not reflect real repository analysis.
-              It exists to provide pacing, narrative weight, and visual clarity
-              during demos and walkthroughs.
+          <Panel title="NOTES">
+            <p className="text-paper/70 leading-relaxed text-xs">
+              This loading screen reflects real repository analysis.
+              Visual pacing is intentional. Brutalism favors clarity
+              over illusion.
             </p>
-            <p className="mt-3 text-paper/70 leading-relaxed">
-              Brutalist UI principle: silence is worse than fake progress.
-            </p>
-          </div>
+          </Panel>
         </div>
 
-        {/* DEBUG TRACE */}
-        <div className="mt-8 border-2 border-paper p-4 font-mono text-[10px] leading-relaxed text-paper/70">
-          <div className="font-bold mb-2">DEBUG TRACE (NON-FUNCTIONAL)</div>
+        {/* DEBUG */}
+        <div className="mt-8 border-2 border-paper p-4 font-mono text-[10px] text-paper/70">
+          <div className="font-bold mb-2">DEBUG TRACE</div>
           <pre>
 {`{
-  "repoUrl": "${repoUrl || "https://github.com/owner/repo"}",
+  "repo": "${repoUrl}",
   "progress": ${pct},
-  "displayProgress": ${displayPct},
-  "stepIndex": ${lineCount},
+  "step": ${lineCount},
   "tick": ${tick},
-  "entropy": ${noise},
-  "mode": "ui-only",
-  "analysis": false
+  "entropy": "${entropy}",
+  "backend": true
 }`}
           </pre>
         </div>
 
         {/* FOOTER */}
         <div className="mt-8 text-center font-mono text-xs text-paper/50">
-          UI PROTOTYPE • LOADING AS PERFORMANCE • BUILT LOUD ON PURPOSE
+          LIVE ANALYSIS • STRUCTURE OVER MAGIC • BUILT LOUD
         </div>
-
       </div>
+    </div>
+  );
+}
+
+
+
+function Panel({ title, children }) {
+  return (
+    <div className="border-2 border-paper p-4">
+      <div className="font-bold mb-2 text-xs">{title}</div>
+      {children}
     </div>
   );
 }
 
 function Metric({ label, value }) {
   return (
-    <div className="flex justify-between border-b border-paper/20 py-1">
+    <div className="flex justify-between border-b border-paper/20 py-1 text-xs">
       <span className="text-paper/60">{label}</span>
       <span className="text-paper">{value}</span>
     </div>
   );
 }
+
+function sleep(ms) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 
 
